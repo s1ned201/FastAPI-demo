@@ -1,3 +1,5 @@
+from typing import Any, Sequence
+
 from sqlalchemy.orm import Session
 from sqlalchemy import select, ScalarResult
 from src.account.schemas.user import UserCreateSchema
@@ -28,19 +30,30 @@ class UserRepository:
         stm = select(User)
         return self.session.execute(stm).scalars()
 
-    def check_exists_email(self, email: str) -> User:
+    def check_exists_email(self, email: str) -> Sequence[User]:
         stm = select(User).where(User.email==email)
-        return self.session.execute(stm).scalar_one()
+        return self.session.execute(stm).scalars().fetchall()
 
-    def check_exists_user_id(self, user_id: int = None) -> User:
+    def check_exists_user_id(self, user_id: int) -> Sequence[User]:
         stm = select(User).where(User.id==user_id)
-        return self.session.execute(stm).scalar_one()
+        return self.session.execute(stm).scalars().fetchall()
 
 
-    def update(self):
-        pass
+    def update(
+            self,
+            user: User,
+            user_schema: UserCreateSchema
+    ) -> User:
+        for name, value in user_schema.model_dump().items():
+            setattr(user, name, value)
+        self.session.commit()
+        self.session.flush()
+        return user
 
-    def remove(self):
-        pass
+
+    def delete(self, user: User):
+        self.session.delete(user)
+        self.session.commit()
+
 
 

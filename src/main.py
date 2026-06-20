@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from src.core.router import router
 
 
-app = FastAPI(title="Documentation API")
+app = FastAPI(title="FastAPI-demo Docs")
 
 app.include_router(router)
 
