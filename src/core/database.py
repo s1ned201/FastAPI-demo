@@ -15,7 +15,7 @@ sync_session_maker = sessionmaker(autocommit=False, autoflush=False,bind=sync_en
 
 def get_sync_session():
     with Session(sync_engine) as session:
-        yield session
+        return session
 
 
 # Base.metadata.create_all(sync_engine)
